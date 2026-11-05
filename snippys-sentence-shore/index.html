@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Snippy’s Sentence Shore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Fredoka:wght@400;500;600;700&display=swap">
+<style>
+/* Design tokens. One beach theme, always light (a bright, happy game for a 2nd grader).
+   Layout: fixed full-screen app shell = slim top bar + one screen that fills the rest. Built for iPad landscape. */
+:root {
+  --ink: #1E3A5F;      /* text, outlines */
+  --sand: #FFF1D0;     /* page background, warm */
+  --sea: #1790B5;      /* SUBJECT color, main buttons */
+  --coral: #FF6F59;    /* PREDICATE color, Snippy, big actions */
+  --sun: #FFC83D;      /* hints, highlights, glow */
+  --leaf: #34B26E;     /* correct, success */
+  --sea-t: #D6F0F8; --coral-t: #FFE2DC; --sun-t: #FFF3C4; --leaf-t: #D8F4E4; --line: #CFE6EE;
+  --font-ui: 'Fredoka', 'Trebuchet MS', system-ui, sans-serif;
+  --font-read: 'Andika', Verdana, 'Trebuchet MS', sans-serif;
+}
+</style>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app" data-screen="">
+  <header id="top">
+    <button id="homeBtn" class="icon-btn" aria-label="Home map">🏠</button>
+    <div id="title">Snippy’s Sentence Shore</div>
+    <div class="grow"></div>
+    <div id="shells" aria-label="Shells collected">🐚 <b>0</b></div>
+    <button id="sndBtn" class="icon-btn" aria-label="Sound on or off">🔊</button>
+    <button id="gu" class="icon-btn" aria-label="Grown-ups: press and hold">🔒</button>
+  </header>
+  <main id="screen"></main>
+  <div id="fx" aria-hidden="true"></div>
+</div>
+<script src="js/base.js"></script>
+<script src="js/data.js"></script>
+<script src="js/core.js"></script>
+<script src="js/games.js"></script>
+<script src="js/screens.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

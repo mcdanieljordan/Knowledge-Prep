@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ensley's Learning Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Fredoka:wght@400;500;600;700&display=swap">
+<style>
+:root{--ink:#1E3A5F;--sand:#FFF1D0;--sea:#1790B5;--coral:#FF6F59;--sun:#FFC83D;--leaf:#34B26E;--white:#fff;--line:#E9D9AE;--muted:#5C6F8A}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:'Fredoka','Andika',system-ui,sans-serif;color:var(--ink);background:var(--sand);min-height:100vh;-webkit-text-size-adjust:100%}
+header{background:linear-gradient(135deg,var(--sea),#2AB3D6);color:#fff;padding:22px clamp(16px,4vw,48px) 26px;position:relative;overflow:hidden}
+header h1{margin:0;font-size:clamp(28px,4.4vw,46px);font-weight:700;letter-spacing:.2px}
+header p{margin:6px 0 0;font-size:clamp(15px,2vw,20px);opacity:.95}
+.wave{position:absolute;right:-20px;bottom:-30px;font-size:120px;opacity:.15;pointer-events:none}
+main{max-width:1180px;margin:0 auto;padding:22px clamp(14px,3vw,36px) 60px}
+.bar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+#q{flex:1 1 280px;min-width:200px;font:inherit;font-size:20px;padding:14px 18px;border-radius:16px;border:3px solid var(--line);background:#fff;color:var(--ink);outline:none}
+#q:focus{border-color:var(--sea)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font:inherit;font-size:17px;font-weight:600;padding:10px 18px;border-radius:999px;border:3px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;min-height:48px}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+h2{font-size:clamp(22px,3vw,30px);margin:26px 0 12px;display:flex;align-items:center;gap:10px}
+h2 small{font-size:16px;font-weight:500;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+.card{background:#fff;border-radius:22px;border:3px solid var(--line);overflow:hidden;display:flex;flex-direction:column;text-decoration:none;color:inherit;box-shadow:0 5px 0 rgba(30,58,95,.08);transition:transform .12s}
+a.card:active{transform:translateY(3px)}
+a.card:hover{transform:translateY(-2px)}
+.top{padding:18px 18px 14px;color:#fff;display:flex;align-items:center;gap:14px}
+.top .em{font-size:52px;line-height:1;background:rgba(255,255,255,.22);border-radius:18px;padding:8px 12px}
+.top h3{margin:0;font-size:24px;line-height:1.15}
+.body{padding:14px 18px 18px;display:flex;flex-direction:column;gap:10px;flex:1}
+.body p{margin:0;font-size:17px;line-height:1.4;font-family:'Andika','Fredoka',sans-serif}
+.meta{display:flex;gap:6px;flex-wrap:wrap}
+.pill{font-size:14px;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--sand);color:var(--ink)}
+.pill.live{background:#D6F3E2;color:#17703F}
+.pill.soon{background:#FFE6A8;color:#7A5200}
+.go{margin-top:auto;font-size:20px;font-weight:700;color:#fff;text-align:center;padding:12px;border-radius:14px;background:var(--coral)}
+.card.soon .go{background:#B9C3D1}
+.card.soon{opacity:.92}
+.skills{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.skill{display:flex;gap:12px;align-items:center;background:#fff;border:3px solid var(--line);border-radius:18px;padding:12px 14px;text-decoration:none;color:inherit;min-height:72px}
+.skill .e{font-size:34px}
+.skill b{font-size:19px;display:block}
+.skill span{font-family:'Andika',sans-serif;font-size:15px;color:var(--muted);display:block}
+.skill i{font-style:normal;font-size:13px;font-weight:600;color:var(--sea)}
+.skill.soon{opacity:.7;pointer-events:none}
+.empty{display:none;text-align:center;padding:40px 10px;font-size:22px}
+footer{text-align:center;color:var(--muted);font-size:15px;padding:10px 0 30px}
+@media (max-height:800px){header{padding-top:14px;padding-bottom:18px}}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="title">Ensley's Learning Hub</h1>
+  <p>Pick a game. Learn something new. Earn stars! ⭐</p>
+  <div class="wave">🌊</div>
+</header>
+<main>
+  <div class="bar">
+    <input id="q" type="search" placeholder="🔍  Search games and skills…" autocomplete="off" aria-label="Search">
+    <div class="chips" id="chips" role="group" aria-label="Filter"></div>
+  </div>
+  <div class="empty" id="empty">Nothing found. Try a different word! 🐚</div>
+  <section id="appsSec"><h2>🎮 Games <small id="appCount"></small></h2><div class="grid" id="apps"></div></section>
+  <section id="skillsSec"><h2>🧠 Skills <small>tap to practice</small></h2><div class="skills" id="skills"></div></section>
+</main>
+<footer>Progress saves on this device. 🦀</footer>
+<script src="library.js"></script>
+<script>
+(function(){
+  var L = window.LIBRARY || {apps:[],skills:[]};
+  var qEl = document.getElementById('q'), chipsEl = document.getElementById('chips');
+  var appsEl = document.getElementById('apps'), skillsEl = document.getElementById('skills');
+  var subject = 'All';
+  document.getElementById('title').textContent = L.title || document.title;
+
+  var subjects = ['All'];
+  L.apps.concat(L.skills).forEach(function(x){ if (x.subject && subjects.indexOf(x.subject) < 0) subjects.push(x.subject); });
+  subjects.forEach(function(s){
+    var b = document.createElement('button');
+    b.className = 'chip'; b.textContent = s === 'All' ? '⭐ All' : s; b.setAttribute('aria-pressed', s === subject);
+    b.onclick = function(){ subject = s; Array.prototype.forEach.call(chipsEl.children, function(c){ c.setAttribute('aria-pressed', c === b); }); render(); };
+    chipsEl.appendChild(b);
+  });
+  if (subjects.length < 3) chipsEl.style.display = 'none';
+
+  function el(tag, cls, txt){ var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  function hay(x){ return [x.name, x.blurb, x.ask, x.level, x.subject, x.grade, (x.tags||[]).join(' ')].join(' ').toLowerCase(); }
+  function appById(id){ return L.apps.filter(function(a){ return a.id === id; })[0]; }
+
+  function render(){
+    var q = qEl.value.trim().toLowerCase();
+    appsEl.innerHTML = ''; skillsEl.innerHTML = '';
+    var na = 0, ns = 0;
+    L.apps.forEach(function(a){
+      if (subject !== 'All' && a.subject !== subject) return;
+      if (q && hay(a).indexOf(q) < 0) return;
+      na++;
+      var live = a.status === 'live';
+      var c = el(live ? 'a' : 'div', 'card' + (live ? '' : ' soon'));
+      if (live) c.href = a.path;
+      var top = el('div', 'top'); top.style.background = a.color || '#1790B5';
+      top.appendChild(el('div', 'em', a.emoji || '📚'));
+      top.appendChild(el('h3', null, a.name));
+      var body = el('div', 'body');
+      body.appendChild(el('p', null, a.blurb));
+      var meta = el('div', 'meta');
+      meta.appendChild(el('span', 'pill ' + (live ? 'live' : 'soon'), live ? 'Ready to play' : 'Coming soon'));
+      if (a.subject) meta.appendChild(el('span', 'pill', a.subject));
+      if (a.grade) meta.appendChild(el('span', 'pill', a.grade));
+      body.appendChild(meta);
+      body.appendChild(el('div', 'go', live ? 'Play! ▶' : 'Soon…'));
+      c.appendChild(top); c.appendChild(body); appsEl.appendChild(c);
+    });
+    L.skills.forEach(function(s){
+      if (subject !== 'All' && s.subject !== subject) return;
+      if (q && hay(s).indexOf(q) < 0) return;
+      ns++;
+      var app = appById(s.app), live = app && app.status === 'live';
+      var a = el(live ? 'a' : 'div', 'skill' + (live ? '' : ' soon'));
+      if (live) a.href = app.path;
+      a.appendChild(el('div', 'e', s.emoji || '⭐'));
+      var t = el('div'); t.appendChild(el('b', null, s.name)); t.appendChild(el('span', null, s.ask));
+      t.appendChild(el('i', null, (app ? app.name : '') + (s.level ? ' · ' + s.level : '') + (live ? '' : ' (soon)')));
+      a.appendChild(t); skillsEl.appendChild(a);
+    });
+    document.getElementById('appCount').textContent = na ? '(' + na + ')' : '';
+    document.getElementById('appsSec').style.display = na ? '' : 'none';
+    document.getElementById('skillsSec').style.display = ns ? '' : 'none';
+    document.getElementById('empty').style.display = (na || ns) ? 'none' : 'block';
+  }
+  qEl.addEventListener('input', render);
+  render();
+})();
+</script>
+</body>
+</html>
