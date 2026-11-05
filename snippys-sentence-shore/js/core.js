@@ -196,6 +196,9 @@
       sk.n += it.n; sk.clean += it.clean; sk.hints += it.hints || 0;
       (it.slips || []).forEach(function (sl) { S.slips[sl] = (S.slips[sl] || 0) + 1; });
     });
+    try { if (window.Hub) { var hp = Hub.ensure('Ensley', 2, '🦀'); var hs = Math.round((rec.secs || 0) * 1000 / Math.max(1, rec.items.length));
+      rec.items.forEach(function (it) { Hub.record({ profile: hp.id, app: 'snippys-sentence-shore', skill: it.skill, ok: it.sc >= 1, hints: it.hints, ms: hs, mode: rec.lv + 'w' + rec.way, why: (it.slips || [])[0], prompt: it.prompt, given: '', correct: '' }); });
+      Hub.session({ profile: hp.id, app: 'snippys-sentence-shore', skill: rec.lv, mode: 'w' + rec.way, n: rec.count, ok: Math.round(rec.score * rec.count), ms: (rec.secs || 0) * 1000 }); } } catch (e) { }
     S.shells += rec.shells;
     S.sessions.unshift({ t: Date.now(), lv: rec.lv, w: rec.way, sc: Math.round(rec.score * 100), st: rec.stars, n: rec.count, s: rec.secs, sh: rec.shells });
     if (S.sessions.length > 60) S.sessions.length = 60;

@@ -50,12 +50,14 @@ a.card:hover{transform:translateY(-2px)}
 .empty{display:none;text-align:center;padding:40px 10px;font-size:22px}
 footer{text-align:center;color:var(--muted);font-size:15px;padding:10px 0 30px}
 @media (max-height:800px){header{padding-top:14px;padding-bottom:18px}}
+.who{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px}.who .chip{font-size:18px}footer a{color:inherit;font-weight:700}
 </style>
 </head>
 <body>
 <header>
   <h1 id="title">Ensley's Learning Hub</h1>
-  <p>Pick a game. Learn something new. Earn stars! ⭐</p>
+  <p>Who's playing? Pick a player, then pick a game. ⭐</p>
+  <div id="who" class="who"></div>
   <div class="wave">🌊</div>
 </header>
 <main>
@@ -67,14 +69,30 @@ footer{text-align:center;color:var(--muted);font-size:15px;padding:10px 0 30px}
   <section id="appsSec"><h2>🎮 Games <small id="appCount"></small></h2><div class="grid" id="apps"></div></section>
   <section id="skillsSec"><h2>🧠 Skills <small>tap to practice</small></h2><div class="skills" id="skills"></div></section>
 </main>
-<footer>Progress saves on this device. 🦀</footer>
+<footer>Progress saves on this device. 🦀 · <a href="dashboard/">🔒 Grown-Ups dashboard</a></footer>
+<script src="shared/hub.js"></script>
 <script src="library.js"></script>
 <script>
 (function(){
   var L = window.LIBRARY || {apps:[],skills:[]};
   var qEl = document.getElementById('q'), chipsEl = document.getElementById('chips');
   var appsEl = document.getElementById('apps'), skillsEl = document.getElementById('skills');
-  var subject = 'All';
+  var subject = 'All', gradeF = null;
+  var whoEl = document.getElementById('who');
+  function drawWho(){
+    whoEl.innerHTML = '';
+    var cur = (window.Hub && Hub.current()) || null;
+    var all = document.createElement('button'); all.className = 'chip'; all.textContent = '👀 Everyone'; all.setAttribute('aria-pressed', gradeF === null);
+    all.onclick = function(){ gradeF = null; drawWho(); render(); }; whoEl.appendChild(all);
+    (window.Hub ? Hub.profiles() : []).forEach(function(p){
+      var b = document.createElement('button'); b.className = 'chip'; b.textContent = p.emoji + ' ' + p.name; b.setAttribute('aria-pressed', gradeF === p.grade);
+      b.onclick = function(){ gradeF = p.grade; Hub.setCurrent(p.id); drawWho(); render(); }; whoEl.appendChild(b);
+    });
+    var add = document.createElement('button'); add.className = 'chip'; add.textContent = '➕ Add player';
+    add.onclick = function(){ Hub.pickProfile(function(p){ gradeF = p.grade; drawWho(); render(); }, {cancel: true}); }; whoEl.appendChild(add);
+  }
+  if (window.Hub) { var c0 = Hub.current(); if (c0) gradeF = c0.grade; }
+  drawWho();
   document.getElementById('title').textContent = L.title || document.title;
 
   var subjects = ['All'];
@@ -97,6 +115,7 @@ footer{text-align:center;color:var(--muted);font-size:15px;padding:10px 0 30px}
     var na = 0, ns = 0;
     L.apps.forEach(function(a){
       if (subject !== 'All' && a.subject !== subject) return;
+      if (gradeF !== null && a.gradeNum !== gradeF) return;
       if (q && hay(a).indexOf(q) < 0) return;
       na++;
       var live = a.status === 'live';
@@ -117,6 +136,7 @@ footer{text-align:center;color:var(--muted);font-size:15px;padding:10px 0 30px}
     });
     L.skills.forEach(function(s){
       if (subject !== 'All' && s.subject !== subject) return;
+      if (gradeF !== null) { var ap0 = appById(s.app); if (!ap0 || ap0.gradeNum !== gradeF) return; }
       if (q && hay(s).indexOf(q) < 0) return;
       ns++;
       var app = appById(s.app), live = app && app.status === 'live';
