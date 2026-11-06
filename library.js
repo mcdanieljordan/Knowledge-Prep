@@ -33,6 +33,21 @@ window.LIBRARY = {
       updated: '2026-11-05'
     },
     {
+      id: 'glitterhoof-unit5',
+      name: 'Glitterhoof Unit 5 Quest',
+      emoji: '🦄',
+      color: '#E0559E',
+      kind: 'game',
+      subject: 'English',
+      grade: '2nd grade',
+      gradeNum: 2,
+      status: 'live',
+      path: 'glitterhoof-unit5/',
+      blurb: 'Unicorn quest for the Unit 5 test. One skill at a time, 5 levels each from easy to boss, then the Rainbow Palace final.',
+      tags: ['compound words', 'articles', 'adjectives', '-er', 'vowel sounds', 'phonograms', 'roots', 'plurals', 'past tense', 'parts of speech', 'subject', 'predicate', 'fragment', 'reading', 'test'],
+      updated: '2026-11-06'
+    },
+    {
       id: 'ensley-grammar-quest',
       name: "Ensley's Grammar Quest",
       emoji: '🧭',
